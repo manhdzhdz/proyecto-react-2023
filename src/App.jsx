@@ -1,33 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useEffect,useState } from "react";
+import axios from "axios";
+import "./App.css"
 
 function App() {
-  const [count, setCount] = useState(0)
+  //crear una constante para guardar la varieble de entorno
+  const API_URL=import.meta.env.VITE_API_URL
+  const [criptos, setCriptos] = useState();
+  useEffect(() => {
+    axios.get(`${API_URL}assets`)
+    .then((data) => {
+      // console.log(data)
+      setCriptos(data.data.data)
+    })
+    .catch(()=>{
+      console.error("La petición falló")
+    })
+  }, []);
+
+  if (!criptos) return <span>CARGANDO</span>
+
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <>
+    <h1>LISTA DE CRIPTOMONEDAS</h1>
+    <ol>
+      {
+        criptos.map(({id,name,priceUsd}) => (
+          <li key={id}>Nombre: {name} Precio:{priceUsd}</li>
+        ))
+      }
+    </ol>
+    </>
+
   )
 }
 
